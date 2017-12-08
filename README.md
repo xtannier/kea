@@ -1,5 +1,7 @@
 # kea
 
+This is a fork from https://github.com/boudinfl/kea with adaptation to python 3. This code is compatible with both versions.
+
 kea is a simple rule-based tokenizer for French. The tokenization process is decomposed in two steps:
     
 1. A rule-based tokenization approach is employed using the punctuation as an 

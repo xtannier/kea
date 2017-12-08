@@ -1,5 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
+from __future__ import unicode_literals 
 
 """
 :Name:
@@ -9,10 +10,10 @@
     Florian Boudin (florian.boudin@univ-nantes.fr)
 
 :Version:
-    0.22
+    0.23
 
 :Date:
-    - 13 feb. 2012
+    - 8 déc. 2017
 
 :Description:
     kea is a tokenizer for French. The tokenization process is decomposed in two
@@ -24,6 +25,7 @@
            fixed contractions such as *aujourd'hui* are considered as one token)
 
 :History:
+    - 0.23 (8 dec. 2017), adapted to python 3 by Xavier Tannier
     - 0.22 (13 feb. 2012), adding the compound words exceptions
     - 0.21 (21 nov. 2011), bug fixes, adding the french city lexicon
     - 0.2 (26 oct. 2011), adding a large lexicon constructed from the lefff.
@@ -60,14 +62,14 @@ class tokenizer:
         self.lexicon = {}
         """ The dictionary containing the lexicon. """
 
-        self.regexp = re.compile(ur"""(?xumsi)
+        self.regexp = re.compile("""(?xumsi)
           (?:[lcdjmnts]|qu)['’]                         # Contractions
         | http:[^\s]+\.\w{2,3}                          # Adresses web
         | \d+[.,]\d+                                    # Les réels en/fr
         | [.-]+                                         # Les ponctuations
         | \w+                                           # Les mots pleins
         | [^\w\s]                                       # -
-        """)
+        """, re.UNICODE)
         
         self.loadlist(self.resources+'abbrs.list')
         """ Loads the default lexicon (path is /resources/abbrs.list). """
@@ -89,7 +91,7 @@ class tokenizer:
         #=======================================================================
         # STEP 1 : tokenize with punctuation
         #=======================================================================
-        text = text.replace(u'\u2019', '\'')
+        # text = text.replace(u'\u2019', '\'')
         tokens = self.regexp.findall(text)
         
         #=======================================================================
@@ -116,7 +118,7 @@ class tokenizer:
                     candidate += tokens[k]
                 # If the candidate word must be tokenized (in the dictionary or
                 # corresponds to a compound with uppercase first letters)
-                if self.lexicon.has_key(candidate.lower()) or \
+                if candidate.lower() in self.lexicon or \
                     (re.search('(?u)^[A-Z]\w+-[A-Z]\w+$', candidate) and \
                     j-i < 3):
                     # Place first counter on the last word
